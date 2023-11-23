@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type Category struct {
 	gorm.Model
-	Type				string
-	Sold_product_amount int
+	Type				string	`json:"type" gorm:"not null"`
+	Sold_product_amount uint	`json:"sold_product_amount"`
 }
