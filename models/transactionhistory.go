@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type Transaction_History struct {
 	gorm.Model
-	ProductID 	uint `json:"product_id" gorm:"not null"`
-	UserID		uint `json:"user_id" gorm:"not null"`
-	Quantity	uint `json:"quantity" gorm:"not null"`
-	Total_price	uint `json:"total_price" gorm:"not null"`
+	ProductID 	int `json:"product_id" gorm:"not null"`
+	UserID		int `json:"user_id" gorm:"not null"`
+	Quantity	int `json:"quantity" gorm:"not null"`
+	Total_price	int `json:"total_price" gorm:"not null"`
 }

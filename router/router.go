@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/Bobby-P-dev/FinalProject2_kel7/middlewares"
 	"github.com/gin-gonic/gin"
 	"github.com/jenghiz-khan/FinalProject4_kel7/controllers"
 )
@@ -12,7 +13,7 @@ func StartApp() *gin.Engine {
 	{
 		userRouter.POST("/register", controllers.RegisterUser)
 		userRouter.POST("/login", controllers.LoginUser)
-		userRouter.PATCH("/topup", controllers.TopupUser)
+		userRouter.PATCH("/topup", middlewares.Authentication(), controllers.TopupUser)
 	}
 
 	categoryRouter := r.Group("/categories")
