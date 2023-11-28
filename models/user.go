@@ -31,7 +31,7 @@ func (u *User) BeforeCreate(tx *gorm.DB) error {
 func (u *User) BeforeUpdate(tx *gorm.DB) error {
 	u.Role = "customer"
 	// Validate user using struct tags
-	if err := validator.New().StructExcept(u, "Password"); err != nil {
+	if err := validator.New().Struct(u); err != nil {
 		return err
 	}
 

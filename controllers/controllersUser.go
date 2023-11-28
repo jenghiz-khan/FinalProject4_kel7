@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,10 +32,8 @@ func RegisterUser(c *gin.Context) {
 	err := db.Debug().Create(&User).Error
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   "bad request",
-			"message": err.Error(),
-		})
+		err := error_utils.NewBadRequest("bad request")
+		c.JSON(err.Status(), err)
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
@@ -93,27 +92,64 @@ func TopupUser(c *gin.Context) {
 	User := models.User{}
 	userID := uint(userData["id"].(float64))
 
+	User.ID = userID
+
+	if err := db.First(&User).Error; err != nil {
+		err := error_utils.NewNotFoundError("User not found")
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	var input struct {
+		Balance int `json:"balance"`
+	}
 	if contentType == appJSON {
-		c.ShouldBindJSON(&User)
+		c.ShouldBindJSON(&input)
 	} else {
 		theErr := error_utils.NewUnprocessibleEntityError("invalid json body")
 		c.JSON(theErr.Status(), theErr)
 		return
 	}
 
-	User.ID = userID
+	// Menambahkan nilai tambahan ke Balance
+	User.Balance += input.Balance
 
-	err := db.Model(&User).Updates(models.User{
-		Balance: User.Balance,
-	}).First(&User).Error
-
-	if err != nil {
-		err := error_utils.NewBadRequest("invalid update")
+	// Simpan perubahan ke dalam database
+	if err := db.Save(&User).Error; err != nil {
+		err := error_utils.NewBadRequest("Maksimal balance 100000000")
 		c.JSON(err.Status(), err)
 		return
 	}
+
+	// err := db.Model(&User).Updates(models.User{
+	// 	Balance: User.Balance,
+	// }).First(&User).Error
+
+	// if err != nil {
+	// 	err := error_utils.NewBadRequest("invalid update")
+	// 	c.JSON(err.Status(), err)
+	// 	return
+	// }
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Your balance has been successfully updated to Rp. <current Balance>",
+		"message": fmt.Sprintf("Your balance has been successfully updated to Rp. %d", User.Balance),
 	})
 
+}
+
+func GetDataUser(c *gin.Context) {
+	db := database.GetDB()
+	var user []models.User
+
+	err := db.Find(&user).Error
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "error",
+			"msg":   err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": user,
+	})
 }

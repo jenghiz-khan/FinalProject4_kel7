@@ -25,7 +25,7 @@ func VerifToken(c *gin.Context) (interface{}, error) {
 	errRes := errors.New("sign in to proces")
 	headerToken := c.Request.Header.Get("Authorization")
 	bearer := strings.HasPrefix(headerToken, "Bearer")
-	key := os.Getenv("KEY")
+	key := os.Getenv("JWT")
 
 	if !bearer {
 		return nil, errRes

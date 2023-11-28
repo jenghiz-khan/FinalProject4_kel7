@@ -20,10 +20,10 @@ func ConnectToDB() {
 		log.Fatal("failed to connect database")
 	}
 
-	DB.Debug().AutoMigrate(&models.User{})
-	DB.Debug().AutoMigrate(&models.Product{})
-	DB.Debug().AutoMigrate(&models.Category{})
-	DB.Debug().AutoMigrate(&models.Transaction_History{})
+	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.Product{})
+	DB.AutoMigrate(&models.Category{})
+	DB.AutoMigrate(&models.Transaction_History{})
 	
 }
 
