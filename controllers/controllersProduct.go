@@ -26,24 +26,22 @@ func PostProducts(c *gin.Context) {
 		return
 	}
 
-
-
 	//create data
-	err := db.Create(&product).First(&product).Error
+	err := db.Create(&product).Error
 
 	if err != nil {
 		errr := error_utils.NewBadRequest("failed to create product")
 		c.JSON(errr.Status(), errr)
 		return
 	}
-	
+
 	c.JSON(http.StatusCreated, gin.H{
-		"id": product.ID,
-		"title": product.Title,
-		"price": product.Price,
-		"stock": product.Stock,
+		"id":          product.ID,
+		"title":       product.Title,
+		"price":       product.Price,
+		"stock":       product.Stock,
 		"category_id": product.CategoryID,
-		"created_at": product.CreatedAt,
+		"created_at":  product.CreatedAt,
 	})
 }
 
@@ -85,10 +83,10 @@ func UpdateProduct(c *gin.Context) {
 	}
 
 	var updateData struct {
-		Title string `json:"title"`
-		Price int	`json:"price"`
-		Stock int	`json:"stock"`
-		CategoryID uint `json:"category_id"`
+		Title      string `json:"title"`
+		Price      int    `json:"price"`
+		Stock      int    `json:"stock"`
+		CategoryID uint   `json:"category_id"`
 	}
 
 	if contentType == appJSON {
@@ -98,14 +96,14 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(theErr.Status(), theErr)
 		return
 	}
-	
+
 	db.Model(&product).Updates(models.Product{
-		Title: updateData.Title,
-		Price: updateData.Price,
-		Stock: updateData.Stock,
+		Title:      updateData.Title,
+		Price:      updateData.Price,
+		Stock:      updateData.Stock,
 		CategoryID: updateData.CategoryID,
 	})
-	
+
 	// var category models.Category
 	// var count int64
 
@@ -116,7 +114,7 @@ func UpdateProduct(c *gin.Context) {
 	// 	c.JSON(err.Status(), err)
 	// 	return
 	// }
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"product": product,
 	})

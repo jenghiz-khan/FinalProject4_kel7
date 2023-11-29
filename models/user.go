@@ -8,11 +8,12 @@ import (
 
 type User struct {
 	gorm.Model
-	Fullname 	string	`json:"full_name" gorm:"not null"`
-	Email		string 	`json:"email" gorm:"uniqueIndex;not null" validate:"required,email"`
-	Password 	string	`json:"password" gorm:"not null" validate:"required,min=6"`
-	Role		string	`json:"role" gorm:"not null" validate:"required,oneof=admin customer"`
-	Balance		int		`json:"balance" gorm:"not null;default:0" validate:"gte=0,lte=100000000"`
+	Fullname            string `json:"full_name" gorm:"not null"`
+	Email               string `json:"email" gorm:"uniqueIndex;not null" validate:"required,email"`
+	Password            string `json:"password" gorm:"not null" validate:"required,min=6"`
+	Role                string `json:"role" gorm:"not null" validate:"required,oneof=admin customer"`
+	Balance             int    `json:"balance" gorm:"not null;default:0" validate:"gte=0,lte=100000000"`
+	Transaction_History []Transaction_History
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
