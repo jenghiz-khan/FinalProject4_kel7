@@ -19,20 +19,20 @@ func StartApp() *gin.Engine {
 
 	categoryRouter := r.Group("/categories")
 	{
-		categoryRouter.Use(middlewares.Authentication())
-		categoryRouter.POST("/", middlewares.RoleAuthorization(), controllers.PostCategory)
-		categoryRouter.GET("/", middlewares.RoleAuthorization(), controllers.GetCategory)
-		categoryRouter.PATCH("/:id", middlewares.RoleAuthorization(), controllers.UpdateCategory)
-		categoryRouter.DELETE("/:id", middlewares.RoleAuthorization(), controllers.DeleteCategory)
+		categoryRouter.Use(middlewares.Authentication(), middlewares.RoleAuthorization())
+		categoryRouter.POST("/", controllers.PostCategory)
+		categoryRouter.GET("/", controllers.GetCategory)
+		categoryRouter.PATCH("/:categoryId", controllers.UpdateCategory)
+		categoryRouter.DELETE("/:categoryId", controllers.DeleteCategory)
 	}
 
 	productRouter := r.Group("/products")
 	{
 		productRouter.Use(middlewares.Authentication())
-		productRouter.POST("/", controllers.PostProducts)
+		productRouter.POST("/", middlewares.RoleAuthorization(), controllers.PostProducts)
 		productRouter.GET("/", controllers.GetProducts)
-		productRouter.PUT("/:id", controllers.UpdateProduct)
-		productRouter.DELETE("/:id", controllers.DeleteProduct)
+		productRouter.PUT("/:id", middlewares.RoleAuthorization(), controllers.UpdateProduct)
+		productRouter.DELETE("/:id", middlewares.RoleAuthorization(), controllers.DeleteProduct)
 	}
 
 	transactionRouter := r.Group("/transactions")
@@ -40,7 +40,7 @@ func StartApp() *gin.Engine {
 		transactionRouter.Use(middlewares.Authentication())
 		transactionRouter.POST("/", controllers.PostTransactions)
 		transactionRouter.GET("/my-transactions", controllers.GetMyTransactions)
-		transactionRouter.GET("/user-transactions", controllers.GetUserTransactions)
+		transactionRouter.GET("/user-transactions", middlewares.RoleAuthorization(), controllers.GetUserTransactions)
 	}
 
 	return r

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -44,10 +45,10 @@ func GetCategory(c *gin.Context) {
 	db := database.GetDB()
 	var category []models.Category
 
-	err := db.Find(&category).Error
+	err := db.Preload("Product").Find(&category).Error
 
 	if err != nil {
-		newErr := error_utils.NewBadRequest("error")
+		newErr := error_utils.NewBadRequest("Bad request")
 		c.JSON(newErr.Status(), err)
 		return
 	}
@@ -58,38 +59,45 @@ func GetCategory(c *gin.Context) {
 
 func UpdateCategory(c *gin.Context) {
 	db := database.GetDB()
-	userData := c.MustGet("userData").(jwt.MapClaims)
 	contentType := helpers.GetContentType(c)
-	_ = contentType
-	id := c.Param("id")
+	categoryId, err := strconv.Atoi(c.Param("categoryId"))
 
-	category := models.Category{}
-	categoryID := uint(userData["id"].(float64))
+	if err != nil {
+		err := error_utils.NewBadRequest("invalid parameter")
+		c.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+
+	Category := models.Category{}
+
+	Category.ID = uint(categoryId)
+
+	err = db.First(&Category, categoryId).Error
+
+	if err != nil {
+		err := error_utils.NewNotFoundError("category not found")
+		c.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+
+	var updateData struct {
+		Type string `json:"type"`
+	}
 
 	if contentType == appJSON {
-		c.ShouldBindJSON(&category)
+		c.ShouldBindJSON(&updateData)
 	} else {
 		theErr := error_utils.NewUnprocessibleEntityError("invalid json body")
 		c.JSON(theErr.Status(), theErr)
 		return
 	}
 
-	category.ID = categoryID
-
-	err := db.Model(&category).Where("id = ?", id).Updates(models.Category{
-		Type: category.Type,
-	}).First(&category).Error
-
-	if err != nil {
-		err := error_utils.NewBadRequest("Failed to edit user")
-		c.JSON(err.Status(), err)
-		return
-	}
+	db.Model(&Category).Update("type", updateData.Type)
 	c.JSON(http.StatusOK, gin.H{
-		"id": 					category.ID,
-		"type": 				category.Type,
-		"sold_product_amount":	category.Sold_product_amount,
-		"updated_at": 			category.UpdatedAt,
+		"id": 					Category.ID,
+		"type": 				Category.Type,
+		"sold_product_amount":	Category.Sold_product_amount,
+		"updated_at": 			Category.UpdatedAt,
 	})
 
 }
@@ -97,21 +105,35 @@ func UpdateCategory(c *gin.Context) {
 func DeleteCategory(c *gin.Context) {
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
-	category := models.Category{}
-	id := c.Param("id")
+	categoryId, err := strconv.Atoi(c.Param("categoryId"))
 
-	categoryID := uint(userData["id"].(float64))
-
-	category.ID = categoryID
-
-	err := db.Delete(&category, id).Error
 	if err != nil {
-		err := error_utils.NewUnauthorized("Unauthorized")
+		err := error_utils.NewBadRequest("invalid parameter")
+		c.AbortWithStatusJSON(err.Status(), err)
+		return
+	}
+
+	Category := models.Category{}
+
+	userID := uint(userData["id"].(float64))
+
+	Category.ID = userID
+	Category.ID = uint(categoryId)
+
+	if err := db.First(&Category, categoryId).Error; err != nil {
+		err := error_utils.NewNotFoundError("category not found")
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	err = db.Delete(&Category, categoryId).Error
+	if err != nil {
+		err := error_utils.NewBadRequest("failed to delete category")
 		c.JSON(err.Status(), err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Your account has been  succesfully deleted",
+		"message": "Your Category has been succesfully deleted",
 	})
 }
