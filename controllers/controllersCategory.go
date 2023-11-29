@@ -33,10 +33,10 @@ func PostCategory(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
-		"id":						category.ID,
-		"type":    					category.Type,
-		"sold_product_amount":		category.Sold_product_amount,
-		"created_at":				category.CreatedAt,
+		"id":                  category.ID,
+		"type":                category.Type,
+		"sold_product_amount": category.Sold_product_amount,
+		"created_at":          category.CreatedAt,
 	})
 
 }
@@ -94,10 +94,10 @@ func UpdateCategory(c *gin.Context) {
 
 	db.Model(&Category).Update("type", updateData.Type)
 	c.JSON(http.StatusOK, gin.H{
-		"id": 					Category.ID,
-		"type": 				Category.Type,
-		"sold_product_amount":	Category.Sold_product_amount,
-		"updated_at": 			Category.UpdatedAt,
+		"id":                  Category.ID,
+		"type":                Category.Type,
+		"sold_product_amount": Category.Sold_product_amount,
+		"updated_at":          Category.UpdatedAt,
 	})
 
 }
@@ -126,7 +126,7 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	err = db.Delete(&Category, categoryId).Error
+	err = db.Delete(&Category).Error
 	if err != nil {
 		err := error_utils.NewBadRequest("failed to delete category")
 		c.JSON(err.Status(), err)

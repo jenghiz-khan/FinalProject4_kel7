@@ -13,6 +13,7 @@ import (
 )
 
 func PostProducts(c *gin.Context) {
+
 	db := database.GetDB()
 	contentType := helpers.GetContentType(c)
 
@@ -104,35 +105,32 @@ func UpdateProduct(c *gin.Context) {
 		CategoryID: updateData.CategoryID,
 	})
 
-	// var category models.Category
-	// var count int64
-
-	// db.Model(&category).Where("id = ?", category.ID).Count(&count)
-
-	// if count == int64(category.ID) {
-	// 	err := error_utils.NewNotFoundError("Category not found")
-	// 	c.JSON(err.Status(), err)
-	// 	return
-	// }
-
 	c.JSON(http.StatusOK, gin.H{
 		"product": product,
 	})
 }
 
 func DeleteProduct(c *gin.Context) {
+
 	db := database.GetDB()
 	userData := c.MustGet("userData").(jwt.MapClaims)
 	product := models.Product{}
-	id := c.Param("id")
+	id, _ := strconv.Atoi(c.Param("id"))
 
 	productID := uint(userData["id"].(float64))
 
 	product.ID = productID
+	product.ID = uint(id)
 
-	err := db.Delete(&product, id).Error
+	if err := db.First(&product, id).Error; err != nil {
+		err := error_utils.NewNotFoundError("task not found")
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	err := db.Delete(&product).Error
 	if err != nil {
-		err := error_utils.NewUnauthorized("Unauthorized")
+		err := error_utils.NewBadRequest("Failed to delete product")
 		c.JSON(err.Status(), err)
 		return
 	}
