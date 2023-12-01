@@ -37,11 +37,11 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
-		"id":			User.ID,
-		"full_name":    User.Fullname,
-		"email":		User.Email,
-		"balance":		User.Balance,
-		"created_at":	User.CreatedAt,
+		"id":         User.ID,
+		"full_name":  User.Fullname,
+		"email":      User.Email,
+		"balance":    User.Balance,
+		"created_at": User.CreatedAt,
 	})
 
 }
@@ -121,15 +121,6 @@ func TopupUser(c *gin.Context) {
 		return
 	}
 
-	// err := db.Model(&User).Updates(models.User{
-	// 	Balance: User.Balance,
-	// }).First(&User).Error
-
-	// if err != nil {
-	// 	err := error_utils.NewBadRequest("invalid update")
-	// 	c.JSON(err.Status(), err)
-	// 	return
-	// }
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("Your balance has been successfully updated to Rp. %d", User.Balance),
 	})

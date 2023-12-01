@@ -8,5 +8,6 @@ type Transaction_History struct {
 	UserID      uint `json:"user_id" gorm:"not null"`
 	Quantity    int  `json:"quantity" gorm:"not null"`
 	Total_price int  `json:"total_price" gorm:"not null"`
-	User        User
+	Product     Product
+	User        UsertRespon
 }

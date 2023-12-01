@@ -40,7 +40,7 @@ func StartApp() *gin.Engine {
 		transactionRouter.Use(middlewares.Authentication())
 		transactionRouter.POST("/create", controllers.PostTransactions)
 		transactionRouter.GET("/my-transactions", controllers.GetMyTransactions)
-		transactionRouter.GET("/user-transactions", middlewares.RoleAuthorization(), controllers.GetUserTransactions)
+		transactionRouter.GET("/user-transactions/:id", middlewares.RoleAuthorization(), controllers.GetUserTransactions)
 	}
 
 	return r

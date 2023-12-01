@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/jenghiz-khan/FinalProject4_kel7/helpers"
@@ -41,4 +42,17 @@ func (u *User) BeforeUpdate(tx *gorm.DB) error {
 	}
 
 	return nil
+}
+
+type UsertRespon struct {
+	ID        int       `json:"id" form:"id"`
+	Fullname  string    `json:"full_name"`
+	Email     string    `json:"email"`
+	Balance   int       `json:"balance"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"update_at"`
+}
+
+func (UsertRespon) TableName() string {
+	return "users"
 }
