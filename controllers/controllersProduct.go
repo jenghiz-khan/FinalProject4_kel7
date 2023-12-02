@@ -98,12 +98,20 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	db.Model(&product).Updates(models.Product{
+	// Update dan cek apakah category_id sesuai dengan database
+	check := db.Model(&product).Updates(models.Product{
 		Title:      updateData.Title,
 		Price:      updateData.Price,
 		Stock:      updateData.Stock,
 		CategoryID: updateData.CategoryID,
-	})
+	}).Error
+	
+	if check != nil {
+		errr := error_utils.NewBadRequest("failed to update product)")
+		c.JSON(errr.Status(), errr)
+		return
+	}
+
 
 	c.JSON(http.StatusOK, gin.H{
 		"product": product,
