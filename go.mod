@@ -1,6 +1,6 @@
 module github.com/jenghiz-khan/FinalProject4_kel7
 
-go 1.21.4
+go 1.20
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
