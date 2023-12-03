@@ -13,7 +13,7 @@ func StartApp() *gin.Engine {
 	{
 		userRouter.POST("/register", controllers.RegisterUser)
 		userRouter.POST("/login", controllers.LoginUser)
-		userRouter.PATCH("/update-account", middlewares.Authentication(), controllers.TopupUser)
+		userRouter.PATCH("/topup", middlewares.Authentication(), controllers.TopupUser)
 		userRouter.GET("/get", controllers.GetDataUser)
 	}
 

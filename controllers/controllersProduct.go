@@ -78,7 +78,7 @@ func UpdateProduct(c *gin.Context) {
 	err = db.First(&product, productId).Error
 
 	if err != nil {
-		err := error_utils.NewNotFoundError("category not found")
+		err := error_utils.NewNotFoundError("product not found")
 		c.AbortWithStatusJSON(err.Status(), err)
 		return
 	}
@@ -105,13 +105,12 @@ func UpdateProduct(c *gin.Context) {
 		Stock:      updateData.Stock,
 		CategoryID: updateData.CategoryID,
 	}).Error
-	
+
 	if check != nil {
-		errr := error_utils.NewBadRequest("failed to update product)")
-		c.JSON(errr.Status(), errr)
+		err := error_utils.NewNotFoundError("category not found")
+		c.AbortWithStatusJSON(err.Status(), err)
 		return
 	}
-
 
 	c.JSON(http.StatusOK, gin.H{
 		"product": product,
