@@ -1,5 +1,5 @@
 # FinalProject4_kel7
-Link github = https://github.com/Bobby-P-dev/FinalProject3_kel7
+Link github = https://github.com/jenghiz-khan/FinalProject4_kel7.git
 
 # dokumentasi API
 
