@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/jenghiz-khan/FinalProject4_kel7/utils/error_utils"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +16,11 @@ type Product struct {
 
 func (p *Product) BeforeCreate(tx *gorm.DB) (err error) {
 
+	if err := ValidStock(p.Stock); err != nil {
+		err := error_utils.NewBadRequest("stock must be greater than or equal to 5")
+		return err
+	}
+
 	validate := validator.New()
 	errCreate := validate.Struct(p)
 
@@ -23,7 +29,7 @@ func (p *Product) BeforeCreate(tx *gorm.DB) (err error) {
 		return
 	}
 	err = nil
-	return
+	return nil
 }
 
 func (p *Product) BeforeUpdate(tx *gorm.DB) (err error) {
@@ -37,4 +43,11 @@ func (p *Product) BeforeUpdate(tx *gorm.DB) (err error) {
 	}
 	err = nil
 	return
+}
+
+func ValidStock(Stock int) (err error) {
+	if Stock < 5 {
+		panic("stock must be greater than or equal to 5")
+	}
+	return nil
 }

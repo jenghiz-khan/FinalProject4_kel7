@@ -61,6 +61,7 @@ func GetProducts(c *gin.Context) {
 }
 
 func UpdateProduct(c *gin.Context) {
+
 	db := database.GetDB()
 	contentType := helpers.GetContentType(c)
 	productId, err := strconv.Atoi(c.Param("id"))
@@ -83,15 +84,15 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	var updateData struct {
-		Title      string `json:"title"`
-		Price      int    `json:"price"`
-		Stock      int    `json:"stock"`
-		CategoryID uint   `json:"category_id"`
-	}
+	// var updateData struct {
+	// 	Title      string `json:"title"`
+	// 	Price      int    `json:"price"`
+	// 	Stock      int    `json:"stock"`
+	// 	CategoryID uint   `json:"category_id"`
+	// }
 
 	if contentType == appJSON {
-		c.ShouldBindJSON(&updateData)
+		c.ShouldBindJSON(&product)
 	} else {
 		theErr := error_utils.NewUnprocessibleEntityError("invalid json body")
 		c.JSON(theErr.Status(), theErr)
@@ -100,10 +101,10 @@ func UpdateProduct(c *gin.Context) {
 
 	// Update dan cek apakah category_id sesuai dengan database
 	check := db.Model(&product).Updates(models.Product{
-		Title:      updateData.Title,
-		Price:      updateData.Price,
-		Stock:      updateData.Stock,
-		CategoryID: updateData.CategoryID,
+		Title:      product.Title,
+		Price:      product.Price,
+		Stock:      product.Stock,
+		CategoryID: product.CategoryID,
 	}).Error
 
 	if check != nil {
