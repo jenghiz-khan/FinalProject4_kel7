@@ -78,10 +78,10 @@ func PostTransactions(c *gin.Context) {
 	db.Save(&Category)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"message":       "You have successfully purchased the product",
-		"total_price":   transaction.Total_price,
-		"quantity":      transaction.Quantity,
-		"product_title": Product.Title,
+		"message"        : "You have successfully purchased the product",
+		"total_price"    : transaction.Total_price,
+		"quantity"       : transaction.Quantity,
+		"product_title"  : Product.Title,
 	})
 }
 
