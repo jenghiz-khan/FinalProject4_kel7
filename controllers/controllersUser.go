@@ -37,11 +37,11 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
-		"id":         User.ID,
-		"full_name":  User.Fullname,
-		"email":      User.Email,
-		"balance":    User.Balance,
-		"created_at": User.CreatedAt,
+		"id"         :  User.ID,
+		"full_name"  :  User.Fullname,
+		"email"      :  User.Email,
+		"balance"    :  User.Balance,
+		"created_at" :  User.CreatedAt,
 	})
 
 }
@@ -135,8 +135,8 @@ func GetDataUser(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "error",
-			"msg":   err.Error(),
+			"error" : "error",
+			"msg"   : err.Error(),
 		})
 		return
 	}
