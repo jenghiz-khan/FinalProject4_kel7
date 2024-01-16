@@ -37,7 +37,7 @@ request body
 
 Method = POST
 
-Domain = https://project4kel7.adaptable.app//users/login
+Domain = https://project4kel7.adaptable.app/users/login
 
 request body
 
@@ -118,7 +118,7 @@ request body
 
 Method = DELETE
 
-Domain = https://project4kel7.adaptable.app/catehories/delete/:id
+Domain = https://project4kel7.adaptable.app/categories/delete/:id
 
 request
 `
